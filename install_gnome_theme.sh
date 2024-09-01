@@ -1,7 +1,18 @@
 #!/bin/zsh
 sudo apt install gnome-tweaks
 sudo apt install gnome-shell-extensions
+sudo apt install gnome-shell-extension-manager
 local_icon_dir="$HOME/.local/share/icons"
+
+# Customized dock: Go to gnome website install extension: dash-to-dock
+# sudo apt install dconf-editor
+
+# Touchpad
+sudo add-apt-repository ppa:touchegg/stable
+sudo apt install touchegg
+printf "===================================================\n"
+printf "Start up extension manager to install X11 Gestures.\n"
+printf "===================================================\n"
 
 # Bibata cursor
 Bibata_type="Bibata-Modern-Ice"
