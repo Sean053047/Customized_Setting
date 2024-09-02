@@ -7,6 +7,9 @@ local_icon_dir="$HOME/.local/share/icons"
 # Customized dock: Go to gnome website install extension: dash-to-dock
 # sudo apt install dconf-editor
 
+# Install hydra-paper
+flatpak install flathub org.gabmus.hydrapaper
+
 # Touchpad
 sudo add-apt-repository ppa:touchegg/stable
 sudo apt install touchegg
