@@ -30,7 +30,7 @@ check_dir_package_installed() {
     	return 1
     fi
 }
-sudo apt install tmux vim wget git curl htop nvtop gpg -y
+sudo apt install tmux vim wget git curl htop nvtop gpg pip -y
 if prompt_user "Set git default user and email?";then 
 	printf "\ngit default username: "
 	read -p " " -e  response
