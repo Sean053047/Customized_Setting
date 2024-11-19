@@ -1,35 +1,19 @@
 FROM ros:iron
-
+ARG USERNAME=eva_sean
 # Source ROS 2 setup script
 SHELL ["/bin/bash", "-c"]
 
-# Set entrypoint to source ROS 2 Iron
-ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/iron/setup.bash && exec bash"]
-
 # RUN apt-get update
 RUN apt-get update && \
-    apt-get install -y tmux vim wget git curl htop nvtop gpg pip
+    apt-get install -y tmux vim wget git curl htop nvtop gpg pip zsh 
 
-RUN mkdir -p /setup
-
+RUN mkdir -p /setup 
 COPY *.sh /setup/
+COPY ./file /setup/file
+# WORKDIR  /home/${USERNAME}
+# RUN bash /setup/install_tools_docker.sh --git_user Sean053047 --git_email sadlamb910803@gmail.com && \
+    # bash /setup/install_venv_related.sh
+#
+# WORKDIR /home/${USERNAME}
 
-RUN bash /setup/install_tools_docker.sh --git_user Sean053047 --git_email sadlamb910803@gmail.com && \
-    bash /setup/install_venv_related.sh
-
-
-# 
-# RUN chomod +x /setup/*.sh
-
-
-
-
-# RUN useradd -s /bin/bash eva_sean
-# USER eva_sean
-
-
-
-
-# RUN bash /setup/install_venv_related.sh
-
-
+# CMD ['zsh']
