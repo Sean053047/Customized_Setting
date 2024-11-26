@@ -31,6 +31,12 @@ fi
 git config --global core.editor "vim"
 git config --global init.defaultBranch main
 
+# Install git credential
+wget https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.6.0/gcm-linux_amd64.2.6.0.deb
+sudo dpkg -i gcm-linux_amd64*.deb
+rm gcm-linux_amd64*.deb
+git-credential-manager configure
+
 # Install zsh and set it as default
 sudo apt install zsh -y
 chsh -s $(which zsh)
