@@ -19,9 +19,15 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-sudo apt install tmux vim wget git curl htop nvtop gpg pip -y
-git config --global user.name "$USER"	
-git config --global user.email "$EMAIL"
+sudo apt install tmux vim wget git curl htop nvtop gpg python3-pip -y
+if [[ -n "$USER" && -n "$EMAIL"  ]]; then
+    git config --global user.name "$USER"	
+    git config --global user.email "$EMAIL"
+    echo -e "\nUpdate git config user settings.\n"
+else
+    echo -e "\nSkip git config user settings. Empty arguments.\n"
+fi
+
 git config --global core.editor "vim"
 git config --global init.defaultBranch main
 
