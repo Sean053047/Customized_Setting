@@ -1,0 +1,72 @@
+FROM osrf/ros:iron-desktop
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    bzip2 \
+    htop \
+    nvtop \
+    zsh \
+    ca-certificates \
+    git \
+    tmux \
+    vim \
+    sudo \
+    x11-apps \
+    libsm6 \
+    libxext6 \
+    libxrender-dev 
+    # && rm -rf /var/lib/apt/lists/*
+
+ARG UNAME=user
+ARG UID=1000
+ARG GID=1000
+ARG GIT_USER=Sean053047
+ARG GIT_MAIL=sadlamb910803@gmail.com
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -s /bin/zsh $UNAME
+RUN echo "$UNAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER $UNAME
+CMD ["/bin/bash"]
+
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "/home/$UNAME/miniconda.sh" \
+    && bash "/home/$UNAME/miniconda.sh" -b -u -p "/home/$UNAME/miniconda3"\
+    && rm "/home/$UNAME/miniconda.sh"
+
+# Add conda to path
+ENV PATH="/home/$UNAME/miniconda3/bin:$PATH"
+
+COPY --chown=$UID:$GID install_tools_docker.sh "/home/$UNAME/setting/install_tools_docker.sh"
+COPY --chown=$UID:$GID file/.tmux.conf "/home/$UNAME/.tmux.conf"
+COPY --chown=$UID:$GID file/.p10k.zsh "/home/$UNAME/.p10k.zsh"
+RUN  bash /home/$UNAME/setting/install_tools_docker.sh --git_user $GIT_USER --git_email $GIT_MAIL
+RUN echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> /home/$UNAME/.zshrc || \
+    echo "source /opt/ros/iron/setup.zsh"
+
+# RUN bash source /opt/ros/iron/setup.bash
+WORKDIR /home/$UNAME/
+
+# # Create conda environment
+# RUN conda create -yn perception_evaluation python=3.10 pip
+
+# # Set up shell to use conda environment by default
+# SHELL ["conda", "run", "-n", "perception_evaluation", "/bin/bash", "-c"]
+
+# COPY requirements.txt /tmp
+# RUN cd /tmp \
+#     && pip install -r requirements.txt
+
+# COPY --chown=$UID:$GID itri_msgs /home/user/itri_msgs_build/itri_msgs
+# COPY --chown=$UID:$GID src/itri_msgs_py /home/user/itri_msgs_build/src/itri_msgs_py
+# RUN source /opt/ros/noetic/setup.bash \
+#     && cd /home/user/itri_msgs_build/src/itri_msgs_py \
+#     && python -m pip install .
+
+# WORKDIR /workspace
+
+# RUN conda init bash && \
+#     echo "conda activate perception_evaluation" >> ~/.bashrc
+# RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+# ENV PATH=/opt/conda/envs/perception_evaluation/bin:$PATH
+
