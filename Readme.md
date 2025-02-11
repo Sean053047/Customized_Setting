@@ -3,9 +3,12 @@
 ```bash  
 cd ${Customized_setting directory}
 
-docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) --build-arg UNAME=eva_sean -f Customized_Setting/ros_Dockerfile -t ub .
-```
+# Build docker image
+docker/build.sh
 
+# Start and enter to the container
+docker/start.sh
+```
 
 follow the steps to build the customized settings:
 
