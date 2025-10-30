@@ -1,0 +1,7 @@
+[user]
+	name = Sean053047
+	email = sadlamb910803@gmail.com
+[core]
+	editor = vim
+[init]
+	defaultBranch = main

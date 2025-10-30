@@ -1,19 +1,12 @@
-FROM osrf/ros:iron-desktop
+FROM nvidia/cuda:12.8.0-runtime-ubuntu22.04
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    wget \
-    bzip2 \
-    htop \
-    nvtop \
-    zsh \
-    ca-certificates \
-    git \
-    tmux \
-    vim \
-    sudo \
+    wget bzip2 htop \
+    nvtop zsh ca-certificates \
+    git tmux vim sudo \
     openssh-server \
-    net-tools
+    net-tools 
     # && rm -rf /var/lib/apt/lists/*
 
 ARG UNAME=user
@@ -33,12 +26,15 @@ RUN sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config && \
 EXPOSE 20000
 
 USER $UNAME
-CMD ["/bin/bash"]
+
 
 # Install Miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "/home/$UNAME/miniconda.sh" \
-    && bash "/home/$UNAME/miniconda.sh" -b -u -p "/home/$UNAME/miniconda3"\
-    && rm "/home/$UNAME/miniconda.sh"
+RUN mkdir -p ~/miniconda3 && \
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh && \
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 && \
+    rm ~/miniconda3/miniconda.sh
+ENV CONDA_PKGS_ACCEPT_TERMS=true
+
 
 # Add conda to path
 ENV PATH="/home/$UNAME/miniconda3/bin:$PATH"
@@ -47,15 +43,9 @@ COPY --chown=$UID:$GID setup_ubuntu/install_tools_docker.sh "/home/$UNAME/settin
 COPY --chown=$UID:$GID file/.tmux.conf "/home/$UNAME/.tmux.conf"
 COPY --chown=$UID:$GID file/.p10k.zsh "/home/$UNAME/.p10k.zsh"
 RUN  bash /home/$UNAME/setting/install_tools_docker.sh --git_user $GIT_USER --git_email $GIT_MAIL
-RUN echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> /home/$UNAME/.zshrc || \
-    echo "source /opt/ros/iron/setup.zsh"
+RUN echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> /home/$UNAME/.zshrc && \
+    echo  '\nexport LANG=C.UTF-8' >> /home/$UNAME/.zshrc && \
+    echo  '\nexport LC_ALL=C.UTF-8' >> /home/$UNAME/.zshrc
     
-# RUN bash source /opt/ros/iron/setup.bash
-
-WORKDIR /workspace
-# # Create conda environment
-# RUN conda create -yn perception_evaluation python=3.10 pip
-
-# # Set up shell to use conda environment by default
-# SHELL ["conda", "run", "-n", "perception_evaluation", "/bin/bash", "-c"]
+CMD ["/bin/zsh"]
 

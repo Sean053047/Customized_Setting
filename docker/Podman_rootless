@@ -1,0 +1,47 @@
+FROM osrf/ros:iron-desktop
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    bzip2 \
+    htop \
+    nvtop \
+    zsh \
+    ca-certificates \
+    git \
+    tmux \
+    vim \
+    sudo \
+    net-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG UNAME=user
+ARG UID=1000
+ARG GID=1000
+ARG GIT_USER=Sean053047
+ARG GIT_MAIL=sadlamb910803@gmail.com
+# Add new user (For certain usage)
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -s /bin/zsh $UNAME
+RUN echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER $UNAME
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "/home/$UNAME/miniconda.sh" \
+    && bash "/home/${UNAME}/miniconda.sh" -b -u -p "/home/${UNAME}/miniconda3"\
+    && rm "/home/${UNAME}/miniconda.sh"
+
+# Add conda to path
+ENV PATH="/home/${UNAME}/miniconda3/bin:$PATH"
+
+COPY --chown=$UID:$GID setup_ubuntu/install_tools_docker.sh "/home/${UNAME}/setting/install_tools_docker.sh"
+COPY --chown=$UID:$GID file/.tmux.conf "/home/${UNAME}/.tmux.conf"
+COPY --chown=$UID:$GID file/.p10k.zsh "/home/${UNAME}/.p10k.zsh"
+RUN  bash /home/$UNAME/setting/install_tools_docker.sh --git_user $GIT_USER --git_email $GIT_MAIL
+RUN echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> /home/$UNAME/.zshrc || \
+    echo "source /opt/ros/iron/setup.zsh"
+
+WORKDIR /workspace
+CMD ["/bin/zsh"]
+
+
