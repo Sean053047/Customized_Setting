@@ -4,11 +4,11 @@ USER=""
 EMAIL=""
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --git_user)
+        --user)
             USER="$2"
             shift 2
             ;;
-        --git_email)
+        --email)
             EMAIL="$2"
             shift 2
             ;;
