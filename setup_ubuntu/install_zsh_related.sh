@@ -1,4 +1,6 @@
 #! /bin/zsh
+project_path=$(dirname $(dirname $(realpath $0)))
+
 rm -rf ~/.oh-my-zsh ~/.zshrc ~/.zprofile ~/.p10k.zsh
 
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -20,4 +22,5 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 sed -i "s|^plugins=.*|plugins=( git zsh-completions zsh-autosuggestions zsh-syntax-highlighting )|" "$HOME/.zshrc"	
 
-cp ../file/.p10k.zsh ~/.p10k.zsh
+cp "$project_path/file/.p10k.zsh" ~/.p10k.zsh
+echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> ~/.zshrc
